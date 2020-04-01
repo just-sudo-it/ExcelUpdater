@@ -25,17 +25,17 @@ namespace ExcelUpdater.ConsoleApp
         
         static async Task<int> Main()
         {
-            Log.Logger  = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                //.WriteTo.File("log.txt")
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug)
-                .CreateLogger();
-           
             IConfiguration Config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false,  true)
                 .AddJsonFile("appsettings.local.json",true,true)
                 .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Config)
+                .MinimumLevel.Debug()
+                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug)
+                .CreateLogger();
 
             DbContextOptionsBuilder<RecordContext> builder = new DbContextOptionsBuilder<RecordContext>()
                 .UseSqlServer(Config.GetConnectionString("ExcelUpdater"));
@@ -126,7 +126,14 @@ namespace ExcelUpdater.ConsoleApp
         {
             using HttpResponseMessage response = await client.PostAsync(uri, new FormUrlEncodedContent(formValues) );
 
-            Log.Information(string.Format("[Post] Status code: {0}  \t Phrase : {1}", response.StatusCode, response.ReasonPhrase))
+            if (response.IsSuccessStatusCode) {
+                Log.Information(string.Format("[Post] Status code: {0}  \t Phrase : {1}", response.StatusCode, response.ReasonPhrase));
+                return;
+            }
+            else
+            {
+                Log.Debug(string.Format("[Post] Failed to authenticate.Status code: {0}  \t Phrase : {1}", response.StatusCode, response.ReasonPhrase))
+            }
         }
 
         private static async Task  DownloadFileAsync(Uri uri, string toPath)
@@ -163,8 +170,7 @@ namespace ExcelUpdater.ConsoleApp
                     IRow row = sheet.GetRow(i);
                     for (int j = 0; j < row.LastCellNum; j++)
                     {
-                        var cellValue = row.GetCell(j).ToString().Trim();
-                        buffer.Append(cellValue);
+                        buffer.Append(row.GetCell(j).ToString().Trim());
                         buffer.Append(",");
                     }
                     buffer.Append("\n");
