@@ -82,5 +82,4 @@ namespace ExceUpdater.Domain
             return true;
         }
     }
-
 }

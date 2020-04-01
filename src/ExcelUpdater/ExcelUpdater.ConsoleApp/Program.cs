@@ -42,7 +42,6 @@ namespace ExcelUpdater.ConsoleApp
             
             using RecordContext ctx = new RecordContext(builder.Options);
 
-
             #region SET DEFAULT HTTP-REQUEST HEADERS
             client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -127,9 +126,7 @@ namespace ExcelUpdater.ConsoleApp
         {
             using HttpResponseMessage response = await client.PostAsync(uri, new FormUrlEncodedContent(formValues) );
 
-            Log.Information(string.Format("[Post] Status code: {0}  \t Phrase : {1}", response.StatusCode, response.ReasonPhrase));
-
-
+            Log.Information(string.Format("[Post] Status code: {0}  \t Phrase : {1}", response.StatusCode, response.ReasonPhrase))
         }
 
         private static async Task  DownloadFileAsync(Uri uri, string toPath)
@@ -148,7 +145,6 @@ namespace ExcelUpdater.ConsoleApp
                 }
             }
             Log.Debug("[Download file]: Failed to download file");
-            
         }
 
         private static void XlsxToCsv(string xlsxPath, string csvPath)
@@ -177,7 +173,6 @@ namespace ExcelUpdater.ConsoleApp
                     buffer.Clear();
                 }
             }
-            
         }
     }
 }
