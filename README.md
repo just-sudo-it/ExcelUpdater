@@ -3,4 +3,4 @@ A .NET Core Console App that authenticates a user at "LoginUrl" and updates an S
 
 If given,the file is also downloaded locally at "ExcelPath".
  
-You just need to add your credentials( email, password) as well as a valid connection string at ExcelUpdater.ConsoleApp\appsetings.json.
+You just need to insert your credentials as well as a valid connection string at ExcelUpdater.ConsoleApp\appsetings.json  and run the .exe.
